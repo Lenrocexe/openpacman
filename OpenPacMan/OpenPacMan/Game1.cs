@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Storage;
 namespace OpenPacMan
 {
     /// <summary>
-    /// The best pacman ever!
+    /// The best pacman ever! lolzor yener here
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
