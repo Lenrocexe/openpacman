@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Storage;
 namespace OpenPacMan
 {
     /// <summary>
-    /// The best pacman ever! lolzor yener here
+    /// The best pacman ever! lolzor yener here Maarten OWNS ALL
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
