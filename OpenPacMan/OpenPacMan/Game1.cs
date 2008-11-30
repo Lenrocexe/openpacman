@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Storage;
 namespace OpenPacMan
 {
     /// <summary>
-    /// The best pacman ever! lolzor yener here Maarten OWNS ALL
+    /// The best pacman ever! lolzor yener here Maarten OWNS ALL.
     /// Cornel is 1337 h4ckz0r.
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
