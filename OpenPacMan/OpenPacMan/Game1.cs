@@ -20,11 +20,13 @@ namespace OpenPacMan
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        KeyboardState keyboard = Keyboard.GetState();
+        Player pacman;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            pacman = new Player(this);
         }
 
         /// <summary>
@@ -36,7 +38,6 @@ namespace OpenPacMan
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -48,7 +49,8 @@ namespace OpenPacMan
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            this.Services.AddService(typeof(SpriteBatch), spriteBatch);
+            
             // TODO: use this.Content to load your game content here
         }
 
@@ -71,9 +73,7 @@ namespace OpenPacMan
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
             // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -84,7 +84,10 @@ namespace OpenPacMan
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
+            pacman.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
