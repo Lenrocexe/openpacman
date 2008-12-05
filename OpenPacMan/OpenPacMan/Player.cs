@@ -17,7 +17,7 @@ namespace OpenPacMan
     public class Player : Microsoft.Xna.Framework.DrawableGameComponent
     {
         KeyboardState keyboard = Keyboard.GetState();
-        protected Texture2D sprite = null;
+        protected Texture2D sprite;
         protected Vector2 spritePosition;
         Vector2 loc = new Vector2(150, 150);
         private Game game;
@@ -51,7 +51,7 @@ namespace OpenPacMan
             base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // TODO: Add your drawing code here
             

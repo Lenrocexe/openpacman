@@ -85,7 +85,6 @@ namespace OpenPacMan
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-
             pacman.Draw(gameTime, spriteBatch);
             spriteBatch.End();
             // TODO: Add your drawing code here
