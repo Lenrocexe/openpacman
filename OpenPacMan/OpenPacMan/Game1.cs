@@ -22,9 +22,23 @@ namespace OpenPacMan
         SpriteBatch spriteBatch;
         KeyboardState keyboard = Keyboard.GetState();
         Player pacman;
+        Song gamemusic;
+        Song gamemusic2;
+        Random rand;
+        AudioEngine audioEngine;
+        WaveBank waveBank;
+        SoundBank soundBank;
+        Cue effectSound;
+        SpriteFont font;
+        
+        int playstart = 0;
+        private const int BackBufferWidth = 600;
+        private const int BackBufferHeight = 800;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "Content";
             pacman = new Player(this);
         }
@@ -50,10 +64,18 @@ namespace OpenPacMan
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             this.Services.AddService(typeof(SpriteBatch), spriteBatch);
-            
             // TODO: use this.Content to load your game content here
-        }
 
+            font = this.Content.Load<SpriteFont>(@"font");
+            gamemusic = this.Content.Load<Song>(@"Audio\Music\background");
+            gamemusic2 = this.Content.Load<Song>(@"Audio\Music\background2");
+            
+            audioEngine = new AudioEngine(@"Content\Audio\sounds.xgs");
+            waveBank = new WaveBank(audioEngine, @"Content\Audio\WBank.xwb");
+            soundBank = new SoundBank(audioEngine, @"Content\Audio\SBank.xsb");
+
+        }
+        
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
@@ -73,22 +95,90 @@ namespace OpenPacMan
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+            keyboard = Keyboard.GetState();
+            if (keyboard.IsKeyDown(Keys.Escape))
+                this.Exit();
+
+            this.pacman.pressedKeys(Keyboard.GetState(), this.pacman.loc);
+
             // TODO: Add your update logic here
+            if (keyboard.IsKeyDown(Keys.F1))
+            {
+                MediaPlayer.Play(gamemusic);
+            }
+            if (keyboard.IsKeyDown(Keys.F2))
+            {
+                MediaPlayer.Play(gamemusic2);
+            }
+            if (keyboard.IsKeyDown(Keys.F3))
+            {
+                MediaPlayer.Stop();
+            }
+
+            if (keyboard.IsKeyDown(Keys.A))
+            {
+                if(effectSound != soundBank.GetCue("extrapac"))
+                {
+                    effectSound = soundBank.GetCue("extrapac");
+                }
+                if (!effectSound.IsPlaying)
+                {
+                    effectSound.Play();
+                }
+            }
+
+
+            if (keyboard.IsKeyDown(Keys.S))
+            {
+                soundBank.GetCue("fruiteat").Play();
+            }
+            if (keyboard.IsKeyDown(Keys.D))
+            {
+                soundBank.GetCue("ghosteaten").Play();
+            }
+            if (keyboard.IsKeyDown(Keys.F))
+            {
+                soundBank.GetCue("interm").Play();
+            }
+            if (keyboard.IsKeyDown(Keys.G))
+            {
+                soundBank.GetCue("killed").Play();
+            }
+            if (keyboard.IsKeyDown(Keys.H))
+            {
+                soundBank.GetCue("pacchomp").Play();
+            }
+            if (keyboard.IsKeyDown(Keys.J))
+            {
+                soundBank.GetCue("start").Play();
+            }
             base.Update(gameTime);
         }
-
+        
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
+            Vector2 logoPos = new Vector2(300, 10);
+            Texture2D logo = Content.Load<Texture2D>(@"Images\Sprites\logo");
+            spriteBatch.Draw(logo,logoPos,Color.White);
             pacman.Draw(gameTime, spriteBatch);
+            spriteBatch.DrawString(font,"Score: ", new Vector2(10, 30), Color.Red);
             spriteBatch.End();
             // TODO: Add your drawing code here
-
+            
+            if (playstart == 0)
+            {
+                //soundBank.GetCue("start").Play();
+                //System.Threading.Thread.Sleep(4411);
+                //soundBank.GetCue("pacchomp").Play();
+                playstart = 1;
+            }
+            
             base.Draw(gameTime);
         }
     }
