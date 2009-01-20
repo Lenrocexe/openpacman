@@ -20,12 +20,19 @@ namespace OpenPacMan
     public class Tile : Microsoft.Xna.Framework.DrawableGameComponent
     {
         protected Vector2 spritePosition;
+        protected Texture2D spritesheet = null;
+
+        int SpriteWidth = 14;
+        int SpriteHeight = 14;
+        public Rectangle SourceRect;
+        public Rectangle DestRect;
 
         private Game game;
 
-        public Tile(Game game): base(game)
+        public Tile(Game game, int x, int y, int width, int height): base(game)
         {
             this.game = game;
+            DestRect = new Rectangle(x, y, width, height);
         }
 
         /// <summary>
@@ -37,6 +44,14 @@ namespace OpenPacMan
             // TODO: Add your initialization code here
             base.Initialize();
             this.spritesheet = game.Content.Load<Texture2D>(@"Images\Objects\tile");
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            // TODO: Add your drawing code here
+            SourceRect = new Rectangle(CurrentFrameX * SpriteWidth, 0, SpriteWidth, SpriteHeight);
+            spriteBatch.Draw(spritesheet, DestRect, SourceRect, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+            base.Draw(gameTime);
         }
 
         /// <summary>
