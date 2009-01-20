@@ -14,6 +14,9 @@ namespace OpenPacMan
 {
     /// <summary>
     /// Free pacman clone created by students in the netherlands
+    /// 
+    /// Cornel Alders
+    /// Maarten Hus
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
