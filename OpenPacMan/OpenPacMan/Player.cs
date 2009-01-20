@@ -39,11 +39,9 @@ namespace OpenPacMan
 
         private Game game;
 
-        public Player(Game game)
-            : base(game)
+        public Player(Game game): base(game)
         {
             this.game = game;
-            // TODO: Construct any child components here
         }
 
         public override void Initialize()
