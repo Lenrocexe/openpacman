@@ -22,6 +22,7 @@ namespace OpenPacMan
         protected Vector2 spritePosition;
         protected Texture2D spritesheet = null;
 
+        int CurrentFrameX = 0;
         int SpriteWidth = 14;
         int SpriteHeight = 14;
         public Rectangle SourceRect;
