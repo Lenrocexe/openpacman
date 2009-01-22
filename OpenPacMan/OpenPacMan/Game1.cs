@@ -59,13 +59,14 @@ namespace OpenPacMan
             pills = new List<Pill> { };
             tiles = new List<Tile> { };
 
-            screenBounds = new Rectangle(0, 0, 600, 350);
+            screenBounds = new Rectangle(0, 0, 600, 320);
             //tiles = new Tile(this, 250,325,16,8);
         }
 
         protected override void Initialize()
         {
             Components.Add(pacman);
+            pacman.ScreenBounds(screenBounds);
 
             oldState = Keyboard.GetState();
 
