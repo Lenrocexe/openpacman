@@ -22,20 +22,30 @@ namespace OpenPacMan
         protected Vector2 spritePosition;
         
         protected int moveDirection;
-        int i = 0;
-        float Timer = 0f;
+        float timer = 0f;
         protected string key;
         protected int killed = 0;
 
         /// animation logic
-        float Interval = 1000f / 10f;
-        int FrameCount = 3;
-        int CurrentFrameX = 0;
-        int CurrentFrameY = 0;
-        int SpriteWidth = 14;
-        int SpriteHeight = 14;
+        float interval = 1000f / 10f;
+        int frameCount = 3;
+        int currentFrameX = 0;
+        int currentFrameY = 0;
+        int spriteWidth = 14;
+        int spriteHeight = 14;
+        /// rectangle for the spritesheet(which part of the spritesheet to draw)
         public Rectangle SourceRect;
+        /// position on screen
         public Rectangle DestRect = new Rectangle(20, 320, 14, 14);
+
+        private bool jumpup = true;
+
+        enum State
+        {
+            Walking,
+            Jumping
+        }
+        State CurrentState = State.Walking;
 
         private Game game;
 
@@ -48,7 +58,7 @@ namespace OpenPacMan
         {
             // TODO: Add your initialization code here
             base.Initialize();
-            this.spritesheet = game.Content.Load<Texture2D>(@"Images\Sprites\pacman");
+            this.spritesheet = game.Content.Load<Texture2D>(@"Images\Player\pacman");
 
         }
 
@@ -56,158 +66,116 @@ namespace OpenPacMan
         {
             // TODO: Add your update code here
 
-            Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            this.PressedKeys(Keyboard.GetState());
+
+            if (CurrentState == State.Jumping)
+            {
+               
+                Jump();
+            }
+
             base.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // TODO: Add your drawing code here
-            SourceRect = new Rectangle(CurrentFrameX * SpriteWidth, 0, SpriteWidth, SpriteHeight);
+            
+            SourceRect = new Rectangle(currentFrameX * spriteWidth, currentFrameY, spriteWidth, spriteHeight);
             spriteBatch.Draw(spritesheet, DestRect, SourceRect, Color.White, 0, new Vector2(0,0), SpriteEffects.None, 0);
             base.Draw(gameTime);
         }
 
-        public void pressedKeys(KeyboardState k_State, Rectangle s_Position)
+        public void PressedKeys(KeyboardState k_State)
         {
             keyboard = (KeyboardState)k_State;
-            DestRect = (Rectangle)s_Position;
-            int Xpos = DestRect.X;
-            int Ypos = DestRect.Y;
+            //DestRect = (Rectangle)s_Position;
+            int Xpos = this.DestRect.X;
+            int Ypos = this.DestRect.Y;
             key = keyboard.GetPressedKeys().ToString();
             Keys[] keysPressed = keyboard.GetPressedKeys();
 
-            if (keyboard.IsKeyDown(Keys.Down) && keyboard.IsKeyDown(Keys.Right))
+            if (keyboard.IsKeyDown(Keys.Up))
             {
-                if (keyboard.IsKeyDown(Keys.Down))
-                {
-                    Ypos += 2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                }
-                else if (keyboard.IsKeyDown(Keys.Right))
-                {
-                    Xpos += 2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                } 
-                this.moveAni();
-            }
-            else if (keyboard.IsKeyDown(Keys.Down) && keyboard.IsKeyDown(Keys.Left))
-            {
-                if (keyboard.IsKeyDown(Keys.Down))
-                {
-                    Ypos += 2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                }
-                else if (keyboard.IsKeyDown(Keys.Left))
-                {
-                    Xpos += -2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                } 
-                this.moveAni();
-            }
-            else if (keyboard.IsKeyDown(Keys.Up) && keyboard.IsKeyDown(Keys.Right))
-            {
-                if (keyboard.IsKeyDown(Keys.Up))
-                {
-                    Ypos += -2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                }
-                else if (keyboard.IsKeyDown(Keys.Right))
-                {
-                    Xpos += 2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                } 
+                //this.rotate(0);
+                //Ypos += -2;
+                //DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                //this.moveAni();
+                this.CurrentState = State.Jumping;
                 
-                this.moveAni();
             }
-            else if (keyboard.IsKeyDown(Keys.Up) && keyboard.IsKeyDown(Keys.Left))
+            if (keyboard.IsKeyDown(Keys.Right) == true)
             {
-                if (keysPressed[0] == Keys.Up)
+                Xpos += 2;
+                this.DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                this.MoveAni(1);
+                this.CurrentState = State.Walking;
+            }
+            if (keyboard.IsKeyDown(Keys.Down) == true)
+            {
+                //this.rotate(2);
+                //Ypos += 2;
+                //DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                //this.moveAni();
+            }
+            if (keyboard.IsKeyDown(Keys.Left) == true)
+            {
+                Xpos += -2;
+                this.DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                this.MoveAni(0);
+                this.CurrentState = State.Walking;
+            }
+         }
+
+        public void MoveAni(int direction)
+        {
+            moveDirection = direction;
+            if (timer > interval)
+            {
+                currentFrameX++;
+                if (currentFrameX > frameCount - 1)
                 {
-                    Ypos += -2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                    currentFrameX = 0;
                 }
-                else if (keysPressed[0] == Keys.Left)
+                timer = 0f;
+            }
+            
+            if (moveDirection == 0)
+            {
+                ///move left
+                currentFrameY = 14;
+            }
+            else if (moveDirection == 1)
+            {
+                ///move right
+                currentFrameY = 0;
+            }
+        }
+
+        public void Jump()
+        {
+            if (jumpup)
+            {
+                this.DestRect.Y -= 3;
+
+                if (this.DestRect.Y < 250)
                 {
-                    Xpos += -2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                    this.jumpup = false;
                 }
-                this.moveAni();
             }
             else
             {
-                if (keyboard.IsKeyDown(Keys.Up))
+                this.DestRect.Y += 3;
+
+                if (this.DestRect.Y == 320)
                 {
-                    this.rotate(0);
-                    Ypos += -2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                    this.moveAni();
-                }
-                if (keyboard.IsKeyDown(Keys.Right))
-                {
-                    this.rotate(1);
-                    Xpos += 2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                    this.moveAni();
-                }
-                if (keyboard.IsKeyDown(Keys.Down))
-                {
-                    this.rotate(2);
-                    Ypos += 2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                    this.moveAni();
-                }
-                if (keyboard.IsKeyDown(Keys.Left))
-                {
-                    this.rotate(3);
-                    Xpos += -2;
-                    DestRect = new Rectangle(Xpos, Ypos, 14, 14);
-                    this.moveAni();
+                    this.CurrentState = State.Walking;
+                    this.jumpup = true;
                 }
             }
-        }
 
-        public void moveAni()
-        {
-
-            if (Timer > Interval)
-            {
-                CurrentFrameX++;
-                if (CurrentFrameX > FrameCount - 1)
-                {
-                    CurrentFrameX = 0;
-
-                }
-                Timer = 0f;
-            }
-            SourceRect = new Rectangle(CurrentFrameX * SpriteWidth, CurrentFrameY, SpriteWidth, SpriteHeight);
-        }
-
-        public void rotate(int direction)
-        {
-            this.moveDirection = direction;
-            if (this.moveDirection == 0)
-            {
-                ///spritesheet xpos +
-            }
-            else if (this.moveDirection == 1)
-            {
-                
-            }
-            else if (this.moveDirection == 2)
-            {
-                
-            }
-            else if (this.moveDirection == 3)
-            {
-                
-            }
-
-        }
-        public void move()
-        {
-
-        }
-
+            this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.DestRect.Width, this.DestRect.Height);  
+        }    
     }
 }
