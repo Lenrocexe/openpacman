@@ -25,6 +25,8 @@ namespace OpenPacMan
         KeyboardState keyboard = Keyboard.GetState();
         Texture2D background;
         Player pacman;
+        Tile tiles;
+        
         Song gamemusic;
         Song gamemusic2;
         AudioEngine audioEngine;
@@ -44,6 +46,7 @@ namespace OpenPacMan
 
             Content.RootDirectory = "Content";
             pacman = new Player(this);
+            tiles = new Tile(this, 250,325,16,8);
         }
 
         /// <summary>
@@ -55,7 +58,8 @@ namespace OpenPacMan
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            this.Components.Add(pacman);
+            Components.Add(pacman);
+            Components.Add(tiles);
             oldState = Keyboard.GetState();
             base.Initialize();
         }
@@ -78,9 +82,6 @@ namespace OpenPacMan
             gamemusic = this.Content.Load<Song>(@"Audio\Music\background");
             gamemusic2 = this.Content.Load<Song>(@"Audio\Music\background2");
             
-            audioEngine = new AudioEngine(@"Content\Audio\sounds.xgs");
-            waveBank = new WaveBank(audioEngine, @"Content\Audio\WBank.xwb");
-            soundBank = new SoundBank(audioEngine, @"Content\Audio\SBank.xsb");
 
         }
         
@@ -114,12 +115,12 @@ namespace OpenPacMan
                                  where !(oldState.GetPressedKeys().Contains(k))
                                  select k;
 
-            if(newPressedKeys.Contains(Keys.A))
-            {
-                soundBank.PlayCue("fruiteat");
-            }
+            //if(newPressedKeys.Contains(Keys.A))
+            //{
+            //    soundBank.PlayCue("fruiteat");
+            //}
 
-            this.pacman.pressedKeys(Keyboard.GetState(), this.pacman.DestRect);
+            //this.pacman.pressedKeys(Keyboard.GetState(), this.pacman.DestRect);
 
             // TODO: Add your update logic here
             if (keyboard.IsKeyDown(Keys.F1))
@@ -135,30 +136,6 @@ namespace OpenPacMan
                 MediaPlayer.Stop();
             }
 
-            if (keyboard.IsKeyDown(Keys.S))
-            {
-                soundBank.PlayCue("fruiteat");
-            }
-            if (keyboard.IsKeyDown(Keys.D))
-            {
-                soundBank.PlayCue("ghosteaten");
-            }
-            if (keyboard.IsKeyDown(Keys.F))
-            {
-                soundBank.PlayCue("interm");
-            }
-            if (keyboard.IsKeyDown(Keys.G))
-            {
-                soundBank.PlayCue("killed");
-            }
-            if (keyboard.IsKeyDown(Keys.H))
-            {
-                soundBank.PlayCue("pacchomp");
-            }
-            if (keyboard.IsKeyDown(Keys.J))
-            {
-                soundBank.PlayCue("start");
-            }
             base.Update(gameTime);
         }
         
@@ -172,18 +149,19 @@ namespace OpenPacMan
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
             spriteBatch.Draw(background,new Vector2(0,0), Color.White);
-            Texture2D logo = Content.Load<Texture2D>(@"Images\Sprites\logo");
+            Texture2D logo = Content.Load<Texture2D>(@"Images\logo");
             spriteBatch.Draw(logo, new Vector2(300, 10),Color.White);
             pacman.Draw(gameTime, spriteBatch);
+            tiles.Draw(gameTime, spriteBatch);
             spriteBatch.DrawString(font,"Score: ", new Vector2(10, 30), Color.Red);
             spriteBatch.End();
             // TODO: Add your drawing code here
             
             base.Draw(gameTime);
             EndDraw();
-            if (playstart == 0)
+            if (playstart == 5)
             {
-                soundBank.GetCue("start").Play();
+                //soundBank.GetCue("start").Play();
                 System.Threading.Thread.Sleep(4411);
                 //soundBank.GetCue("pacchomp").Play();
                 playstart = 1;
