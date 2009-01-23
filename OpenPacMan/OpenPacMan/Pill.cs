@@ -16,20 +16,29 @@ namespace OpenPacMan
 {
     public class Pill : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        public Texture2D sprite;
+        public Rectangle DestRect;
+        public Rectangle SourceRect;
+
+        private Game game;
+
         public Pill(Game game)
             : base(game)
         {
+            this.game = game;
+            sprite = game.Content.Load<Texture2D>(@"Images\Objects\pill");
+            SourceRect = new Rectangle(0, 0, 7, 7);
             
         }
 
         public override void Initialize()
         {
-
+            
             base.Initialize();
         }
         protected override void LoadContent()
         {
-
+            
             base.LoadContent();
         }
 
@@ -37,6 +46,22 @@ namespace OpenPacMan
         {
 
             base.Update(gameTime);
+        }
+
+        public void positionUpdate(int x, int y)
+        {
+            this.DestRect.X = x;
+            this.DestRect.Y = y;
+            this.DestRect.Width = this.sprite.Width;
+            this.DestRect.Height = this.sprite.Height;
+        }
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            SpriteBatch batch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
+            batch.Begin();
+            batch.Draw(sprite, DestRect, SourceRect, Color.White);
+            batch.End();
+            base.Draw(gameTime);
         }
     }
 }
