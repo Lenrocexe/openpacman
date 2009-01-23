@@ -58,9 +58,9 @@ namespace OpenPacMan
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteBatch batch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
-            batch.Begin();
+            
             batch.Draw(sprite, DestRect, SourceRect, Color.White);
-            batch.End();
+            
             base.Draw(gameTime);
         }
     }

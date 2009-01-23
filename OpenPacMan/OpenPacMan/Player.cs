@@ -16,7 +16,7 @@ namespace OpenPacMan
 
     public class Player : Microsoft.Xna.Framework.DrawableGameComponent
     {
-         KeyboardState keyboard = Keyboard.GetState();
+        KeyboardState keyboard = Keyboard.GetState();
         ///sprite data
         protected Texture2D spritesheet = null;
         protected Rectangle screenBounds;
@@ -62,6 +62,8 @@ namespace OpenPacMan
         {
             this.game = game;
         }
+
+
 
         public override void Initialize()
         {

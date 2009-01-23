@@ -23,17 +23,23 @@ namespace OpenPacMan
         protected Texture2D spritesheet = null;
 
         int CurrentFrameX = 0;
-        int SpriteWidth = 14;
+        int SpriteWidth = 64;
         int SpriteHeight = 14;
         public Rectangle SourceRect;
         public Rectangle DestRect;
+        string tilename;
+        int posx;
+        int posy;
 
         private Game game;
 
-        public Tile(Game game, int x, int y, int width, int height): base(game)
+        public Tile(Game game, string tile, int x, int y): base(game)
         {
             this.game = game;
-            DestRect = new Rectangle(x, y, width, height);
+            game.Content.RootDirectory = "Content";
+            tilename = @"Images\Objects\"+tile;
+            posx = x;
+            posy = y;
         }
 
         /// <summary>
@@ -44,14 +50,17 @@ namespace OpenPacMan
         {
             // TODO: Add your initialization code here
             base.Initialize();
-            this.spritesheet = game.Content.Load<Texture2D>(@"Images\Objects\tile");
+            this.spritesheet = game.Content.Load<Texture2D>(tilename);
+            
+
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // TODO: Add your drawing code here
-            SourceRect = new Rectangle(CurrentFrameX * SpriteWidth, 0, SpriteWidth, SpriteHeight);
-            spriteBatch.Draw(spritesheet, DestRect, SourceRect, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+            SourceRect = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
+            this.DestRect = new Rectangle(posx, posy, SpriteWidth, SpriteHeight);
+            spriteBatch.Draw(this.spritesheet, DestRect, SourceRect, Color.White);
             base.Draw(gameTime);
         }
 
