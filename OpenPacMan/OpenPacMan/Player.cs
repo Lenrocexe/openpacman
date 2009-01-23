@@ -35,6 +35,7 @@ namespace OpenPacMan
         /// animation logic
         float interval = 1000f / 10f;
         int frameCount = 3;
+        int frame = 1;
         int currentFrameX = 0;
         int currentFrameY = 0;
         int spriteWidth = 14;
@@ -43,7 +44,7 @@ namespace OpenPacMan
         /// rectangle for the spritesheet (which part of the spritesheet to draw)
         public Rectangle SourceRect;
         /// position on screen
-        public Rectangle DestRect = new Rectangle(20, 320, 14, 14);
+        public Rectangle DestRect = new Rectangle(20, 300, 14, 14);
 
         private bool jumpup = true;
         private bool inAir = false;
@@ -86,7 +87,10 @@ namespace OpenPacMan
             {
                 Jump();
             }
-
+            if (inAir)
+            {
+                this.SourceRect = new Rectangle(this.spriteHeight * 3, this.spriteWidth, this.spriteHeight, this.spriteWidth);
+            }
             // Sprite Modifier
             // Cornel Alders
             if (keyboard.IsKeyDown(Keys.D1))
@@ -185,6 +189,17 @@ namespace OpenPacMan
                 //Ypos += 2;
                 //DestRect = new Rectangle(Xpos, Ypos, 14, 14);
                 //this.moveAni();
+                if (character == MARIO)
+                {
+                    if (moveDirection == 0)
+                    {
+                        this.currentFrameY = this.spriteHeight * 5;
+                    }
+                    if (moveDirection == 1)
+                    {
+                        this.currentFrameY = this.spriteHeight * 4;
+                    }
+                }
             }
             if (keyboard.IsKeyDown(Keys.Left) == true && CurrentState == State.Walking)
             {
@@ -195,17 +210,35 @@ namespace OpenPacMan
             }
 
          }
-
         public void MoveAni(int direction)
         {
             moveDirection = direction;
             if (timer > interval)
             {
                 //Cycle through animation frames
-                currentFrameX++;
-                if (currentFrameX > frameCount - 1)
+                if (character == PACMAN)
                 {
-                    currentFrameX = 0;
+                    currentFrameX++;
+                    if (currentFrameX > frameCount - 1)
+                    {
+                        currentFrameX = 0;
+                    }
+                }
+                if (character == MARIO || character == ROCKMAN)  
+                {
+                    if (currentFrameX > frameCount - 1)
+                    {
+                        frame = -1;
+                    }
+                    else if (currentFrameX == frameCount -1)
+                    {
+                        frame = -1;
+                    }
+                    else if (currentFrameX < frameCount - 1)
+                    {
+                        frame = 1;
+                    }
+                    currentFrameX += frame;
                 }
                 timer = 0f;
             }
@@ -249,7 +282,7 @@ namespace OpenPacMan
                 this.inAir = true;
                 this.DestRect.Y -= 3;
 
-                if (this.DestRect.Y < 250)
+                if (this.DestRect.Y < 230)
                 {
                     this.jumpup = false;
                 }
@@ -278,6 +311,17 @@ namespace OpenPacMan
                 {
                     this.DestRect.X += -2;
                     this.MoveAni(0);
+                }
+                if (character == MARIO || character == ROCKMAN)
+                {
+                    if (this.keyboard.IsKeyDown(Keys.Left))
+                    {
+                        currentFrameY = this.spriteHeight * 3;
+                    }
+                    if (this.keyboard.IsKeyDown(Keys.Right))
+                    {
+                        currentFrameY = this.spriteHeight * 2;
+                    }
                 }
             }
             this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.spriteWidth, this.spriteHeight);  
