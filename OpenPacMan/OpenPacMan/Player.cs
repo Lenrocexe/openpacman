@@ -20,7 +20,13 @@ namespace OpenPacMan
         ///sprite data
         protected Texture2D spritesheet = null;
         protected Rectangle screenBounds;
-        
+
+        private const int PACMAN = 0;
+        private const int MARIO = 1;
+        private const int ROCKMAN = 2;
+
+        private int character;
+
         protected int moveDirection;
         float timer = 0f;
         protected string key;
@@ -82,23 +88,46 @@ namespace OpenPacMan
             }
 
             // Sprite Modifier
+            // Cornel Alders
             if (keyboard.IsKeyDown(Keys.D1))
             {
                 //change sprite into Pacman
                 // 14 by 14
+                this.frameCount = 3;
+                this.spriteWidth = 14;
+                this.spriteHeight = 14;
+                this.spritesheet = game.Content.Load<Texture2D>(@"Images\Player\pacman");
+                this.character = 0;
+                this.SourceRect = new Rectangle(0, 0, this.spriteWidth, this.spriteHeight);
+                this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.spriteWidth, this.spriteHeight);
             }
             if (keyboard.IsKeyDown(Keys.D2))
             {
                 //change sprite into Mario
                 // height 32 by width 16
+                this.frameCount = 4;
+                this.spriteWidth = 16;
+                this.spriteHeight = 32;
+                this.spritesheet = game.Content.Load<Texture2D>(@"Images\Player\mario");
+                this.character = 1;
+                this.SourceRect = new Rectangle(0, 0, this.spriteWidth, this.spriteHeight);
+                this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.spriteWidth, this.spriteHeight);
             }
             if (keyboard.IsKeyDown(Keys.D3))
             {
                 //change sprite into Rockman
                 // height 30 by  width 26
+                this.frameCount = 4;
+                this.spriteWidth = 26;
+                this.spriteHeight = 30;
+                this.spritesheet = game.Content.Load<Texture2D>(@"Images\Player\rockman");
+                this.character = 2;
+                this.SourceRect = new Rectangle(0, 0, this.spriteWidth, this.spriteHeight);
+                this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.spriteWidth, this.spriteHeight);
             }
 
             // Check screen boundaries
+            // Cornel Alders
             if (DestRect.X <= screenBounds.Left)
             {
                 DestRect.X = screenBounds.Left;
@@ -109,6 +138,7 @@ namespace OpenPacMan
             }
 
             // Resets frame to standing position if Left and Right are false
+            // Cornel Alders
             if (keyboard.IsKeyDown(Keys.Left) == false && keyboard.IsKeyDown(Keys.Right) == false)
             {
                 this.currentFrameX = 0;
@@ -137,7 +167,7 @@ namespace OpenPacMan
             {
                 //this.rotate(0);
                 //Ypos += -2;
-                //DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                //DestRect = new Rectangle(Xpos, Ypos, this.spriteWidth, this.spriteHeight);
                 //this.moveAni();
                 this.CurrentState = State.Jumping;
                 
@@ -145,7 +175,7 @@ namespace OpenPacMan
             if (keyboard.IsKeyDown(Keys.Right) == true && CurrentState == State.Walking)
             {
                 Xpos += 2;
-                this.DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                this.DestRect = new Rectangle(Xpos, Ypos, this.spriteWidth, this.spriteHeight);
                 this.MoveAni(1);
                 this.CurrentState = State.Walking;
             }
@@ -159,7 +189,7 @@ namespace OpenPacMan
             if (keyboard.IsKeyDown(Keys.Left) == true && CurrentState == State.Walking)
             {
                 Xpos += -2;
-                this.DestRect = new Rectangle(Xpos, Ypos, 14, 14);
+                this.DestRect = new Rectangle(Xpos, Ypos, this.spriteWidth, this.spriteHeight);
                 this.MoveAni(0);
                 this.CurrentState = State.Walking;
             }
@@ -179,11 +209,31 @@ namespace OpenPacMan
                 }
                 timer = 0f;
             }
-            //check movement direction
+            // check movement direction
+            // Cornel Alders
             if (moveDirection == 0)
             {
                 ///move left
-                currentFrameY = 14;
+                switch (character)
+                {
+                    case (PACMAN):
+                        {
+                            currentFrameY = 14;
+                            break;
+                        }
+                    case (MARIO):
+                        {
+                            currentFrameY = 32;
+                            break;
+                        }
+                    case (ROCKMAN):
+                        {
+                            currentFrameY = 30;
+                            break;
+                        }
+                    default:
+                        break;
+                }
             }
             else if (moveDirection == 1)
             {
@@ -216,6 +266,7 @@ namespace OpenPacMan
                 }
             }
             // allows movement in air
+            // Cornel Alders
             if (inAir)
             {
                 if (this.keyboard.IsKeyDown(Keys.Right))
@@ -229,8 +280,7 @@ namespace OpenPacMan
                     this.MoveAni(0);
                 }
             }
-            this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.DestRect.Width, this.DestRect.Height);  
+            this.DestRect = new Rectangle(this.DestRect.X, this.DestRect.Y, this.spriteWidth, this.spriteHeight);  
         }
-
     }
 }
