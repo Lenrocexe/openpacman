@@ -28,7 +28,7 @@ namespace OpenPacMan
         Player pacman;
         List<Tile> tiles;
         List<Pill> pills;
-        
+        Tile tile;
         KeyboardState keyboard;
         KeyboardState oldState;
         
@@ -67,7 +67,7 @@ namespace OpenPacMan
             pacman = new Player(this);
             pills = new List<Pill> { };
             tiles = new List<Tile> { };
-
+            tile = new Tile(this, "tile1", 150, 280 );
             screenBounds = new Rectangle(0, 0, 600, 300);
             //tiles = new Tile(this, 250,325,16,8);
         }
@@ -75,6 +75,11 @@ namespace OpenPacMan
         protected override void Initialize()
         {
             this.Components.Add(pacman);
+            foreach (Pill pill in pills)
+            {
+                this.Components.Add(pill);
+            }
+            this.Components.Add(tile);
             pacman.ScreenBounds(screenBounds);
 
             oldState = Keyboard.GetState();
@@ -125,9 +130,9 @@ namespace OpenPacMan
                 this.Exit();
             if (keyboard.IsKeyDown(Keys.Escape))
                 this.Exit();
-
+            checkPill();
             KeyboardState newState = Keyboard.GetState();
-
+            
             // Get keys pressed now that weren't pressed before
             var newPressedKeys = from k in newState.GetPressedKeys()
                                  where !(oldState.GetPressedKeys().Contains(k))
@@ -189,7 +194,11 @@ namespace OpenPacMan
                 spriteBatch.Draw(logo, new Vector2(300, 10),Color.White);
                 pacman.Draw(gameTime, spriteBatch);
                 spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 30), Color.Red);
-
+            foreach (Pill pill in pills)
+            {
+                pill.Draw(gameTime, spriteBatch);
+            }
+                //tile.Draw(gameTime, spriteBatch);
             spriteBatch.End();
             
             base.Draw(gameTime);
@@ -206,15 +215,12 @@ namespace OpenPacMan
         // Cornel Alders
         public void newGame()
         {
-            for (int i = 0; i <= 10; i++)
+            for (int i = 0; i <= 9; i++)
             {
                 Pill food = new Pill(this);
                 food.positionUpdate(100 + i * 50, 250);
-                this.Components.Add(food);
                 pills.Add(food);
             }
-            soundBank.GetCue("newgame").Play();
-            //System.Threading.Thread.Sleep(4411);
             playstart = 1;
         }
 
@@ -222,21 +228,29 @@ namespace OpenPacMan
         // Cornel Alders
         public void checkPill()
         {
-            for (int i = pills.Count - 1; i >= 0;i++ )
+            try
             {
-                if (pacman.DestRect.Intersects(pills[i].DestRect))
+                foreach (Pill pill in pills)
                 {
-                    score += 10;
-                    soundBank.GetCue("eatpill1").Play();
-                    pills.Remove(pills[i]);
+                    if (pacman.DestRect.Intersects(pill.DestRect))
+                    {
+                        score += 10;
+                        soundBank.GetCue("eatpill1").Play();
+                        pills.Remove(pill);
+                    }
                 }
+            }
+            catch
+            {
+
             }
 
             // start a new game if no pills are left
             if (pills.Count == 0)
             {
-                playstart = 0;
+                newGame();
             }
         }
+
     }
 }
