@@ -47,6 +47,9 @@ namespace OpenPacMan
         // Font
         SpriteFont font;
 
+        // score
+        int score = 0;
+
         // var for newgame sound
         int playstart = 0;
 
@@ -54,7 +57,7 @@ namespace OpenPacMan
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
+            
             pacman = new Player(this);
             pills = new List<Pill> { };
             tiles = new List<Tile> { };
@@ -65,7 +68,7 @@ namespace OpenPacMan
 
         protected override void Initialize()
         {
-            Components.Add(pacman);
+            this.Components.Add(pacman);
             pacman.ScreenBounds(screenBounds);
 
             oldState = Keyboard.GetState();
@@ -131,7 +134,10 @@ namespace OpenPacMan
             {
                 MediaPlayer.Stop();
             }
-
+            if (keyboard.IsKeyDown(Keys.P))
+            {
+                score += 10;
+            }
             base.Update(gameTime);
         }
         
@@ -146,7 +152,7 @@ namespace OpenPacMan
                 spriteBatch.Draw(background,new Vector2(0,0), Color.White);
                 spriteBatch.Draw(logo, new Vector2(300, 10),Color.White);
                 pacman.Draw(gameTime, spriteBatch);
-                spriteBatch.DrawString(font,"Score: ", new Vector2(10, 30), Color.Red);
+                spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 30), Color.Red);
 
             spriteBatch.End();
             
@@ -156,9 +162,44 @@ namespace OpenPacMan
             // Play the start tune at the beginning
             if (playstart == 0)
             {
-                soundBank.GetCue("newgame").Play();
-                System.Threading.Thread.Sleep(4411);
-                playstart = 1;
+                newGame();
+            }
+        }
+
+        // create a new game when all pills are eaten.
+        // Cornel Alders
+        public void newGame()
+        {
+            for (int i = 0; i <= 10; i++)
+            {
+                Pill food = new Pill(this);
+                food.positionUpdate(100 + i * 50, 250);
+                this.Components.Add(food);
+                pills.Add(food);
+            }
+            soundBank.GetCue("newgame").Play();
+            //System.Threading.Thread.Sleep(4411);
+            playstart = 1;
+        }
+
+        // Check collisions with pills
+        // Cornel Alders
+        public void checkPill()
+        {
+            for (int i = pills.Count - 1; i >= 0;i++ )
+            {
+                if (pacman.DestRect.Intersects(pills[i].DestRect))
+                {
+                    score += 10;
+                    soundBank.GetCue("eatpill1").Play();
+                    pills.Remove(pills[i]);
+                }
+            }
+
+            // start a new game if no pills are left
+            if (pills.Count == 0)
+            {
+                playstart = 0;
             }
         }
     }
