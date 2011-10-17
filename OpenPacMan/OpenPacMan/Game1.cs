@@ -38,14 +38,10 @@ namespace OpenPacMan
         Texture2D logo;
         
         // audio variables
-        Song gamemusic;
-        Song gamemusic2;
-        Song gamemusic3;
-        Song gamemusic4;
-        Song gamemusic5;
-        Song gamemusic6;
-        Song gamemusic7;
-        Song gamemusic8;
+        Song gamemusic01;
+        Song gamemusic02;
+        Song gamemusic03;
+        Song gamemusic04;
         AudioEngine audioEngine;
         WaveBank waveBank;
         SoundBank soundBank;
@@ -105,14 +101,10 @@ namespace OpenPacMan
             // Load data files
             background = this.Content.Load<Texture2D>(@"Images\background");
             font = this.Content.Load<SpriteFont>(@"font");
-            gamemusic = this.Content.Load<Song>(@"Audio\Music\background9");
-            gamemusic2 = this.Content.Load<Song>(@"Audio\Music\background8");
-            gamemusic3 = this.Content.Load<Song>(@"Audio\Music\background3");
-            gamemusic4 = this.Content.Load<Song>(@"Audio\Music\background7");
-            gamemusic5 = this.Content.Load<Song>(@"Audio\Music\background");
-            gamemusic6 = this.Content.Load<Song>(@"Audio\Music\background5");
-            gamemusic7 = this.Content.Load<Song>(@"Audio\Music\background6");
-            gamemusic8 = this.Content.Load<Song>(@"Audio\Music\background12");
+            gamemusic = this.Content.Load<Song>(@"Audio\Music\background01");
+            gamemusic2 = this.Content.Load<Song>(@"Audio\Music\background02");
+            gamemusic3 = this.Content.Load<Song>(@"Audio\Music\background03");
+            gamemusic4 = this.Content.Load<Song>(@"Audio\Music\background04");
             logo = this.Content.Load<Texture2D>(@"Images\logo");
         }
         
@@ -141,7 +133,7 @@ namespace OpenPacMan
             // play some music by pressing the corresponding key
             if (keyboard.IsKeyDown(Keys.F1))
             {
-                MediaPlayer.Play(gamemusic5);
+                MediaPlayer.Play(gamemusic1);
             }
             if (keyboard.IsKeyDown(Keys.F2))
             {
@@ -154,22 +146,6 @@ namespace OpenPacMan
             if (keyboard.IsKeyDown(Keys.F4))
             {
                 MediaPlayer.Play(gamemusic4);
-            }
-            if (keyboard.IsKeyDown(Keys.F5))
-            {
-                MediaPlayer.Play(gamemusic5);
-            }
-            if (keyboard.IsKeyDown(Keys.F6))
-            {
-                MediaPlayer.Play(gamemusic6);
-            }
-            if (keyboard.IsKeyDown(Keys.F7))
-            {
-                MediaPlayer.Play(gamemusic7);
-            }
-            if (keyboard.IsKeyDown(Keys.F8))
-            {
-                MediaPlayer.Play(gamemusic8);
             }
             if (keyboard.IsKeyDown(Keys.F12))
             {
